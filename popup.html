@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebLink Saver</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+        :root {
+            /* Enhanced Color System */
+            --bg: #F9FAFB;
+            --surface: #FFFFFF;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-soft: #eff6ff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --border-hover: #d1d5db;
+            --success: #10b981;
+            --error: #ef4444;
+
+            /* Spacing */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            width: 420px;
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Enhanced Header --- */
+        .header {
+            padding: 14px 20px 10px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .logo-box {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .header-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* --- Modern Tab Design --- */
+        .tabs {
+            display: flex;
+            padding: 6px;
+            background: var(--bg);
+            margin: 10px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: var(--text-main);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .tab.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* --- Container --- */
+        .container {
+            padding: 0 20px 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* --- Modern Card Design --- */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .input,
+        .textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: #fafafa;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .input::placeholder,
+        .textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .input:focus,
+        .textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* --- Enhanced Button Styles --- */
+        .btn {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+            margin-bottom: 12px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .group-btn {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.875rem;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg);
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 0.8125rem;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-destructive {
+            background: transparent;
+            color: var(--error);
+            border: 1.5px solid var(--error);
+        }
+
+        .btn-destructive:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        #refresh {
+            margin-top: 2px;
+            padding: 8px 14px;
+        }
+
+        /* --- Badge Styles --- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .badge-primary {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .badge-secondary {
+            background: var(--bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .badge-green {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .badge-pink {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        /* --- Enhanced URL List Item (Bento Style) --- */
+        .url-item {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            margin-top: 2px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .url-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .url-item-header {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .url-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .url-item-description {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .url-item-url {
+            font-size: 0.75rem;
+            color: var(--primary);
+            word-break: break-all;
+            margin-bottom: 10px;
+            display: block;
+            font-family: 'Courier New', monospace;
+            background: var(--primary-soft);
+            padding: 6px 8px;
+            border-radius: 6px;
+        }
+
+        .url-item-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .url-item-actions {
+            display: none;
+            flex-direction: row;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .url-item-actions.active {
+            display: flex;
+        }
+
+        .menu-action-btn {
+            color: var(--text-main);
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            padding: 6px 7px 0px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .menu-action-btn:hover {
+            background: var(--bg);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow);
+        }
+
+        .icon-close {
+            display: none;
+        }
+
+        .menu-action-btn.active .icon-dots {
+            display: none;
+        }
+
+        .menu-action-btn.active .icon-close {
+            display: inline;
+        }
+
+        /* Alert/Status: Toast Container (optional if multiple toasts) */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Toast Base */
+        .alert {
+            min-width: 280px;
+            max-width: 400px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+            animation: slideDown 0.3s ease;
+        }
+
+        /* Success */
+        .alert-success {
+            background: #d1fae5;
+            color: #047857;
+            border: 1px solid #6ee7b7;
+        }
+
+        /* Error */
+        .alert-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Slide Down Animation */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .empty-state-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .empty-state-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .empty-state-description {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Utilities --- */
+        .hidden {
+            display: none;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .gap-1 {
+            gap: 4px;
+        }
+
+        .gap-2 {
+            gap: 8px;
+        }
+
+        .gap-3 {
+            gap: 12px;
+        }
+
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 12px;
+        }
+
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+
+        .mt-2 {
+            margin-top: 8px;
+        }
+
+        /* --- Enhanced Scrollbar --- */
+        .scroll-area {
+            max-height: 460px;
+            overflow-y: auto;
+            padding-right: 4px;
+            padding-top: 2px;
+        }
+
+        .scroll-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        .scroll-area::-webkit-scrollbar-thumb:hover {
+            background: var(--border-hover);
+        }
+
+        .container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        /* --- Animations --- */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* --- Icon Styles --- */
+        .icon {
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Status/Toaster -->
+    <div class="toast-container">
+        <div id="status" class="hidden"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="brand">
+            <div class="logo-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="header-title">WebLink</div>
+                <div class="header-subtitle">Your personal digital library</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" data-tab="save">
+            <span>Save Link</span>
+        </button>
+        <button class="tab" data-tab="list">
+            <span>Saved Links</span>
+        </button>
+    </div>
+
+    <!-- Save Tab -->
+    <div id="saveTab" class="tab-content container">
+        <div class="card">
+            <div class="form-group">
+                <label class="label">Title</label>
+                <input type="text" id="title" class="input" placeholder="Enter a title...">
+            </div>
+
+            <div class="form-group">
+                <label class="label">Description</label>
+                <textarea id="description" class="textarea" placeholder="Add a description (optional)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="label">Label</label>
+                <input type="text" id="label" class="input" placeholder="Work, Personal, Reading...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <button id="save" class="btn btn-primary btn-full">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-file-download">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" />
+                        <path d="M12 17v-6" />
+                        <path d="M9.5 14.5l2.5 2.5l2.5 -2.5" />
+                    </svg></span>
+                <span>Save URL</span>
+            </button>
+            <div class="group-btn">
+                <button id="notify" class="btn btn-secondary btn-full">
+                    <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                            <path
+                                d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                        </svg></span>
+                    <span>WhatsApp</span>
+                </button>
+
+                <button id="notionSave" class="btn btn-secondary btn-full">
+                    <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-brand-notion">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M11 17.5v-6.5h.5l4 6h.5v-6.5" />
+                            <path
+                                d="M19.077 20.071l-11.53 .887a1 1 0 0 1 -.876 -.397l-2.471 -3.294a1 1 0 0 1 -.2 -.6v-10.741a1 1 0 0 1 .923 -.997l11.389 -.876a2 2 0 0 1 1.262 .33l1.535 1.023a2 2 0 0 1 .891 1.664v12.004a1 1 0 0 1 -.923 .997" />
+                            <path d="M4.5 5.5l2.5 2.5" />
+                            <path d="M20 7l-13 1v12.5" />
+                        </svg></span>
+                    <span>Notion</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- List Tab -->
+    <div id="listTab" class="tab-content container hidden">
+        <button id="refresh" class="btn btn-secondary btn-full mb-4 mt-2">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-reload">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M19.933 13.041a8 8 0 1 1 -9.925 -8.788c3.899 -1 7.935 1.007 9.425 4.747" />
+                    <path d="M20 4v5h-5" />
+                </svg></span>
+            <span>Refresh List</span>
+        </button>
+
+        <div id="urlList" class="scroll-area"></div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit URL</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="label">Title</label>
+                    <input type="text" id="editTitle" class="input" placeholder="Enter a title...">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Description</label>
+                    <textarea id="editDescription" class="textarea"
+                        placeholder="Add a description (optional)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Label</label>
+                    <input type="text" id="editLabel" class="input" placeholder="Work, Personal, Reading...">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="cancelBtn" class="btn btn-secondary mb-3">Cancel</button>
+                <button id="updateBtn" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
