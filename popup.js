@@ -1,3 +1,6 @@
+// Cross-browser compatibility (Chrome + Firefox)
+const extAPI = typeof browser !== "undefined" ? browser : chrome;
+
 // Global variable for edit mode
 let currentEditKey = null;
 
@@ -27,7 +30,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 // Save URL
 document.getElementById('save').addEventListener('click', function () {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    extAPI.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         let tab = tabs[0];
         let title = document.getElementById('title').value || tab.title;
         let description = document.getElementById('description').value;
@@ -50,7 +53,7 @@ document.getElementById('save').addEventListener('click', function () {
         // Use a unique key with timestamp to avoid overwriting
         const key = `url_${Date.now()}`;
 
-        chrome.storage.local.set({ [key]: urlData }, function () {
+        extAPI.storage.local.set({ [key]: urlData }, function () {
             showStatus('URL saved successfully!', 'success');
             // Clear form
             document.getElementById('title').value = '';
@@ -62,7 +65,7 @@ document.getElementById('save').addEventListener('click', function () {
 
 // WhatsApp notification
 document.getElementById('notify').addEventListener('click', function () {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    extAPI.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         let tab = tabs[0];
         let message = `Check this out: ${tab.title} - ${tab.url}`;
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`);
@@ -71,11 +74,11 @@ document.getElementById('notify').addEventListener('click', function () {
 
 // Notion Integration - One-time setup, then automatic save
 document.getElementById('notionSave').addEventListener('click', function () {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    extAPI.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         let tab = tabs[0];
 
         // Check if Notion is already configured
-        chrome.storage.local.get(['notionConfigured', 'notionApiKey', 'notionDatabaseId'], function (result) {
+        extAPI.storage.local.get(['notionConfigured', 'notionApiKey', 'notionDatabaseId'], function (result) {
             if (result.notionConfigured) {
                 // Already configured - directly save
                 saveToNotion(tab, result.notionApiKey, result.notionDatabaseId);
@@ -140,7 +143,7 @@ function showNotionSetup(tab) {
     databaseId = databaseId.replace(/-/g, '');
 
     // Save configuration
-    chrome.storage.local.set({
+    extAPI.storage.local.set({
         notionConfigured: true,
         notionApiKey: apiKey,
         notionDatabaseId: databaseId
@@ -261,7 +264,7 @@ function saveToNotion(tab, apiKey, databaseId) {
             // Reset option
             setTimeout(() => {
                 if (confirm('Want to reset Notion configuration?')) {
-                    chrome.storage.local.remove(['notionConfigured', 'notionApiKey', 'notionDatabaseId'], function () {
+                    extAPI.storage.local.remove(['notionConfigured', 'notionApiKey', 'notionDatabaseId'], function () {
                         showStatus('Configuration reset!', 'success');
                     });
                 }
@@ -273,7 +276,7 @@ function saveToNotion(tab, apiKey, databaseId) {
 // You can add this as a button in settings or list view
 function resetNotionConfig() {
     if (confirm('Reset Notion configuration?')) {
-        chrome.storage.local.remove(['notionConfigured', 'notionApiKey', 'notionDatabaseId'], function () {
+        extAPI.storage.local.remove(['notionConfigured', 'notionApiKey', 'notionDatabaseId'], function () {
             showStatus('Notion configuration reset!', 'success');
         });
     }
@@ -315,7 +318,7 @@ function getBadgeClass(label) {
 
 // Load and display URL list
 function loadURLList() {
-    chrome.storage.local.get(null, function (items) {
+    extAPI.storage.local.get(null, function (items) {
         const urlList = document.getElementById('urlList');
         const urls = Object.entries(items).filter(([key]) => key.startsWith('url_'));
 
@@ -402,7 +405,7 @@ function addURLListeners() {
     // Open URL
     document.querySelectorAll('.open-url').forEach(btn => {
         btn.addEventListener('click', function () {
-            chrome.tabs.create({ url: this.dataset.url });
+            extAPI.tabs.create({ url: this.dataset.url });
         });
     });
 
@@ -428,7 +431,7 @@ function addURLListeners() {
         btn.addEventListener('click', function () {
             if (confirm('Are you sure you want to delete this URL?')) {
                 const key = this.dataset.key;
-                chrome.storage.local.remove(key, function () {
+                extAPI.storage.local.remove(key, function () {
                     showStatus('URL deleted successfully', 'success');
                     loadURLList();
                 });
@@ -441,7 +444,7 @@ function addURLListeners() {
 function openEditModal(key) {
     currentEditKey = key;
 
-    chrome.storage.local.get(key, function (items) {
+    extAPI.storage.local.get(key, function (items) {
         const data = items[key];
 
         if (data) {
@@ -476,7 +479,7 @@ document.getElementById('updateBtn').addEventListener('click', function () {
         return;
     }
 
-    chrome.storage.local.get(currentEditKey, function (items) {
+    extAPI.storage.local.get(currentEditKey, function (items) {
         const data = items[currentEditKey];
 
         if (data) {
@@ -486,7 +489,7 @@ document.getElementById('updateBtn').addEventListener('click', function () {
             data.label = document.getElementById('editLabel').value.trim();
             data.updatedAt = new Date().toISOString();
 
-            chrome.storage.local.set({ [currentEditKey]: data }, function () {
+            extAPI.storage.local.set({ [currentEditKey]: data }, function () {
                 showStatus('URL updated successfully!', 'success');
                 closeEditModal();
                 loadURLList();
@@ -539,7 +542,7 @@ document.addEventListener('click', function(e) {
 
 
 // Load current tab info when popup opens
-chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+extAPI.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs[0]) {
         document.getElementById('title').value = tabs[0].title;
     }
